@@ -1,11 +1,12 @@
 "use client";
 
-import { ArrowLeftRight, Landmark, Settings, Tags } from "lucide-react";
+import { ArrowLeftRight, Landmark, LayoutGrid, Settings, Tags } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 const ITENS = [
+  { href: "/", rotulo: "Visão geral", icone: LayoutGrid },
   { href: "/lancamentos", rotulo: "Lançamentos", icone: ArrowLeftRight },
   { href: "/contas", rotulo: "Contas", icone: Landmark },
   { href: "/categorias", rotulo: "Categorias", icone: Tags },
@@ -17,9 +18,9 @@ type Modo = "lateral" | "inferior";
 /** A lista de links; `caminho` nulo = sem item ativo (usado como fallback estático). */
 export function ListaNavegacao({ modo, caminho }: { modo: Modo; caminho: string | null }) {
   return (
-    <nav className={cn(modo === "lateral" ? "flex flex-col gap-1" : "grid grid-cols-4")}>
+    <nav className={cn(modo === "lateral" ? "flex flex-col gap-1" : "grid grid-cols-5")}>
       {ITENS.map(({ href, rotulo, icone: Icone }) => {
-        const ativo = caminho?.startsWith(href) ?? false;
+        const ativo = caminho == null ? false : href === "/" ? caminho === "/" : caminho.startsWith(href);
         return (
           <Link
             key={href}

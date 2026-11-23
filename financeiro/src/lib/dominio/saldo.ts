@@ -82,3 +82,14 @@ export function saldoDaConta(
 
   return { confirmado, noFim };
 }
+
+/** Contas a pagar ou a receber: o que está previsto até o fim do período e ainda não foi pago. */
+export function pendentes<T extends LancamentoBase>(
+  lancamentos: readonly T[],
+  tipo: TipoLancamento,
+  fim: DataISO,
+): T[] {
+  return lancamentos
+    .filter((l) => l.tipo === tipo && l.status === "previsto" && l.data <= fim)
+    .sort((a, b) => (a.data < b.data ? -1 : a.data > b.data ? 1 : 0));
+}

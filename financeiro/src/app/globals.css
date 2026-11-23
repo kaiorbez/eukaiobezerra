@@ -21,8 +21,8 @@
   --negativo: oklch(0.72 0.17 25);
   --aviso: oklch(0.82 0.15 85);
   /* uma cor por moeda, usada em toda a interface */
-  --brl: oklch(0.76 0.13 150);
-  --bob: oklch(0.78 0.13 75);
+  --brl: #199e70; /* validada no fundo escuro (dataviz): faixa de luminosidade, daltonismo e contraste */
+  --bob: #c98500;
   --radius: 0.75rem;
 }
 

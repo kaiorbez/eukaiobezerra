@@ -4,20 +4,29 @@ Controle financeiro para quem fatura em real e vive em boliviano. Cada lançamen
 a moeda em que foi cobrado, cada conta fecha no seu próprio saldo, e a conversão só
 aparece onde é decisão. O PRD completo está em [`docs/prd/PRD.md`](docs/prd/PRD.md).
 
-## Status: Fase 1 · Fundação
+## Status
 
-| | |
+**Fase 1 · Fundação** ✅ — banco, autenticação, RLS, contas, categorias, lançamentos e
+configurações. Portão: um lançamento em cada moeda grava e volta igual (testado).
+
+**Fase 2 · Visão geral** ✅ construída — a tela inicial (`/`), com o seletor de mês movendo todos os cartões:
+
+| Cartão | Regra de moeda |
 | --- | --- |
-| Banco, autenticação e RLS | ✅ |
-| Contas (CRUD, saldo confirmado e no fim do mês, total **por moeda**) | ✅ |
-| Categorias (CRUD, agrupadas por grupo do relatório) | ✅ |
-| Lançamentos (formulário, lista filtrável por mês, conta, moeda, categoria, âmbito e status) | ✅ |
-| Configurações (câmbio de referência com data, rateio do escritório) | ✅ |
-| **Portão:** um lançamento em cada moeda grava e volta igual | ✅ testado no banco e no navegador |
+| Frase de veredito (o mês fecha ou não, e por quanto) | resultado à taxa de referência, declarada embaixo |
+| Saldos de caixa (Confirmado / No fim do mês, com caixa de seleção por conta) | cada linha na moeda da conta, total por moeda |
+| Fluxo de caixa (de hoje ao fim do mês) | um gráfico por moeda, escalas independentes |
+| Contas a pagar e a receber (com botão de marcar pago) | valor na moeda cobrada, total por moeda |
+| Resultado do mês + rateio empresa/pessoal | convertido à referência; taxa e data no rodapé |
+| Últimos lançamentos (os 8 mais recentes) | valor na moeda cobrada |
 
-Fases seguintes (ver PRD, seção 7): 2 · Visão geral, 3 · Câmbio, 4 · Rotina.
-O schema da tabela `cambio` já existe e os câmbios já entram no saldo das contas;
-falta a tela de registro e o comparador de rotas (fase 3).
+Portão da fase 2 — *novembro de 2026 reproduz os números do painel atual*:
+- ✅ com a **massa sintética** em `src/lib/dominio/__fixtures__/novembro-2026.ts`, montada à mão
+  para cair nos números da seção 8 do PRD. Todos os critérios de saldos, a pagar, a receber,
+  resultado, rateio e parâmetros passam (`npm test`) e aparecem certos na tela.
+- ⏳ com os **lançamentos reais** de novembro: falta cadastrá-los e conferir. Só isso fecha o portão de verdade.
+
+O 7º cartão do PRD, **Decisão de câmbio**, entra na Fase 3 junto com o registro de trocas.
 
 ## As duas regras que o código não deixa quebrar
 
@@ -84,7 +93,7 @@ npx supabase status   # mostra a URL e a publishable key para o .env.local
 ## Testes
 
 ```bash
-npm test          # domínio: Bs 248 volta Bs 248, taxa 2,0483, saldos, datas sem fuso
+npm test          # domínio: moeda, câmbio, saldos, fluxo, resultado, rateio e os critérios da seção 8
 npm run test:db   # schema num Postgres descartável: moeda, RLS, câmbio, nada de float
 npm run typecheck
 npm run lint
