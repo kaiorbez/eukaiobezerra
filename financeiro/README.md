@@ -26,7 +26,20 @@ Portão da fase 2 — *novembro de 2026 reproduz os números do painel atual*:
   resultado, rateio e parâmetros passam (`npm test`) e aparecem certos na tela.
 - ⏳ com os **lançamentos reais** de novembro: falta cadastrá-los e conferir. Só isso fecha o portão de verdade.
 
-O 7º cartão do PRD, **Decisão de câmbio**, entra na Fase 3 junto com o registro de trocas.
+**Fase 3 · Câmbio** ✅ — tela `/cambio` e o 7º cartão da Visão geral:
+
+- **Registrar troca:** conta de origem, valor que saiu, conta de destino, valor que entrou. A taxa
+  efetiva é calculada pelo banco (coluna gerada) e mostrada antes de gravar. A troca mexe nos saldos
+  das duas contas e não entra no resultado do mês: não é despesa.
+- **Decisão de câmbio:** quanto falta em boliviano no fim do mês e quanto custa em real, sempre ao
+  câmbio **efetivo** (a última troca), que pode ser sobrescrito pela cotação do dia. Margem de
+  segurança opcional. O código recusa decidir com o câmbio de referência.
+- **Comparador de rotas:** cambista × real → USDT → boliviano, com comissões e tarifa fixa. As
+  cotações do USDT ficam lembradas no navegador.
+- **Diferença contra a referência:** cada troca mostra quanto rendeu a mais ou a menos que a
+  referência (a de 21/11 rendeu Bs 154,60 ≈ R$ 77,30 a mais que 2,000). É calculada, não gravada.
+- **Portão:** a troca de 21/11 (R$ 3.200,00 → Bs 6.554,60) devolve taxa efetiva 2,0483 — no banco,
+  no domínio e na tela ✅.
 
 ## As duas regras que o código não deixa quebrar
 

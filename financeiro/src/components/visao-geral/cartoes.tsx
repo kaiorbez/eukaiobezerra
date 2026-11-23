@@ -6,6 +6,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import type { Lancamento } from "@/lib/dados";
 import {
+  type DecisaoDeTroca,
   MOEDAS,
   NOME_MOEDA,
   type Rateio,
@@ -219,6 +220,50 @@ export function CartaoUltimos({
             </li>
           ))}
         </ul>
+      )}
+    </Card>
+  );
+}
+
+/** Decisão de câmbio: quanto falta na moeda fraca e quanto custa comprar — ao câmbio EFETIVO. */
+export function CartaoDecisao({ decisao, temContaBob }: { decisao: DecisaoDeTroca | null; temContaBob: boolean }) {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Decisão de câmbio</CardTitle>
+      </CardHeader>
+      <CardContent className="grid gap-3 text-sm">
+        {!temContaBob ? (
+          <p className="text-muted-foreground">Sem conta em boliviano, não há o que trocar.</p>
+        ) : !decisao ? (
+          <>
+            <p className="text-muted-foreground">
+              Sem nenhuma troca registrada não há câmbio efetivo — e a decisão nunca usa a referência.
+            </p>
+            <Link href="/cambio" className={buttonVariants({ size: "sm", className: "justify-self-start" })}>
+              Registrar troca
+            </Link>
+          </>
+        ) : decisao.falta.centavos === 0 ? (
+          <p>Não falta boliviano neste mês.</p>
+        ) : (
+          <>
+            <div className="grid grid-cols-[1fr_auto] gap-y-1">
+              <span className="text-muted-foreground">Falta em boliviano</span>
+              <Valor v={decisao.falta} colorir={false} className="text-right" />
+              <span className="font-semibold">Custa em real</span>
+              <Valor v={decisao.custo} colorir={false} className="text-right text-lg font-semibold" />
+            </div>
+            <Link href="/cambio" className={buttonVariants({ size: "sm", variant: "secondary", className: "justify-self-start" })}>
+              Decidir e registrar
+            </Link>
+          </>
+        )}
+      </CardContent>
+      {decisao && (
+        <CardFooter>
+          Ao câmbio efetivo de {formatarTaxa(decisao.taxa.bsPorReal)}, da troca de {formatarData(decisao.taxa.data)}.
+        </CardFooter>
       )}
     </Card>
   );

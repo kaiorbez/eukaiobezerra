@@ -4,7 +4,7 @@ import { Cabecalho } from "@/components/moldura/cabecalho";
 import { NavegadorMes } from "@/components/moldura/navegador-mes";
 import { CartaoFluxo } from "@/components/visao-geral/cartao-fluxo";
 import { CartaoSaldos } from "@/components/visao-geral/cartao-saldos";
-import { CartaoPendentes, CartaoResultado, CartaoUltimos } from "@/components/visao-geral/cartoes";
+import { CartaoDecisao, CartaoPendentes, CartaoResultado, CartaoUltimos } from "@/components/visao-geral/cartoes";
 import type { ContaResumo } from "@/components/visao-geral/tipos";
 import { lerConfig, listarCambios, listarContas, listarLancamentos } from "@/lib/dados";
 import {
@@ -13,6 +13,8 @@ import {
   NOME_MOEDA,
   type Taxa,
   diasDoFluxo,
+  decidirTroca,
+  dinheiro,
   ehMesISO,
   fluxoDaConta,
   formatar,
@@ -27,6 +29,7 @@ import {
   rotuloMes,
   saldoDaConta,
   totaisPorMoeda,
+  ultimaTaxaEfetiva,
   ultimoDia,
 } from "@/lib/dominio";
 import { exigirUsuario } from "@/lib/supabase/server";
@@ -89,6 +92,10 @@ export default async function VisaoGeral({ searchParams }: PageProps<"/">) {
   const caixaFim = totaisPorMoeda(
     resumos.map((r): Dinheiro => ({ centavos: r.noFim, moeda: r.moeda })),
   );
+  // decisão de câmbio: só com o câmbio efetivo (a última troca registrada)
+  const efetiva = ultimaTaxaEfetiva(cambios);
+  const decisao = efetiva ? decidirTroca(dinheiro(caixaFim.BOB.centavos, "BOB"), efetiva) : null;
+
   const moedasNegativas = MOEDAS.filter(
     (m) => contas.some((c) => c.moeda === m) && caixaFim[m].centavos < 0,
   );
@@ -119,6 +126,7 @@ export default async function VisaoGeral({ searchParams }: PageProps<"/">) {
         <div className="grid content-start gap-4">
           <CartaoPendentes tipo="despesa" itens={aPagar} hoje={hoje} mes={mes} nomeConta={nomeConta} />
           <CartaoPendentes tipo="receita" itens={aReceber} hoje={hoje} mes={mes} nomeConta={nomeConta} />
+          <CartaoDecisao decisao={decisao} temContaBob={contas.some((c) => c.moeda === "BOB")} />
         </div>
         <div className="grid content-start gap-4">
           <CartaoResultado r={resultado} rateio={rateio} />

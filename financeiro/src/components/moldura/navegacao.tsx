@@ -1,17 +1,26 @@
 "use client";
 
-import { ArrowLeftRight, Landmark, LayoutGrid, Settings, Tags } from "lucide-react";
+import { ArrowLeftRight, Coins, Landmark, LayoutGrid, Settings, Tags } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
-const ITENS = [
+interface Item {
+  href: string;
+  rotulo: string;
+  icone: typeof Coins;
+  /** só na barra lateral; no celular fica acessível por Ajustes */
+  soLateral?: boolean;
+}
+
+const ITENS: Item[] = [
   { href: "/", rotulo: "Visão geral", icone: LayoutGrid },
   { href: "/lancamentos", rotulo: "Lançamentos", icone: ArrowLeftRight },
+  { href: "/cambio", rotulo: "Câmbio", icone: Coins },
   { href: "/contas", rotulo: "Contas", icone: Landmark },
-  { href: "/categorias", rotulo: "Categorias", icone: Tags },
+  { href: "/categorias", rotulo: "Categorias", icone: Tags, soLateral: true },
   { href: "/configuracoes", rotulo: "Ajustes", icone: Settings },
-] as const;
+];
 
 type Modo = "lateral" | "inferior";
 
@@ -19,7 +28,7 @@ type Modo = "lateral" | "inferior";
 export function ListaNavegacao({ modo, caminho }: { modo: Modo; caminho: string | null }) {
   return (
     <nav className={cn(modo === "lateral" ? "flex flex-col gap-1" : "grid grid-cols-5")}>
-      {ITENS.map(({ href, rotulo, icone: Icone }) => {
+      {ITENS.filter((i) => modo === "lateral" || !i.soLateral).map(({ href, rotulo, icone: Icone }) => {
         const ativo = caminho == null ? false : href === "/" ? caminho === "/" : caminho.startsWith(href);
         return (
           <Link

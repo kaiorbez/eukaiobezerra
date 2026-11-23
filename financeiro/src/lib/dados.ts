@@ -178,12 +178,13 @@ type LinhaCambio = {
   taxa_efetiva: string;
 };
 
-/** Câmbios entram no saldo das contas. A tela de câmbio é da fase 3. */
+/** Câmbios entram no saldo das contas. Mais recente primeiro. */
 export async function listarCambios(db: Db, contas: Conta[]): Promise<Cambio[]> {
   const { data, error } = await db
     .from("cambio")
     .select("id, data, conta_origem_id, valor_origem::text, conta_destino_id, valor_destino::text, taxa_efetiva::text")
-    .order("data", { ascending: false });
+    .order("data", { ascending: false })
+    .order("criado_em", { ascending: false });
   if (error) falhou("listar câmbios", error);
   const moedaDe = new Map(contas.map((c) => [c.id, c.moeda]));
   return (data as unknown as LinhaCambio[]).map((r) => ({

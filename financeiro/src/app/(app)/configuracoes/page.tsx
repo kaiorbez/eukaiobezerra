@@ -1,5 +1,6 @@
 import { AlertTriangle } from "lucide-react";
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Cabecalho } from "@/components/moldura/cabecalho";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { lerConfig, listarCambios, listarContas } from "@/lib/dados";
@@ -41,6 +42,14 @@ export default async function Configuracoes() {
         </CardContent>
       </Card>
 
+      <Link
+        href="/categorias"
+        className="flex items-center justify-between rounded-xl border bg-card px-5 py-4 text-sm font-medium hover:bg-muted/40"
+      >
+        Categorias
+        <span className="text-muted-foreground">→</span>
+      </Link>
+
       <Card>
         <CardHeader>
           <CardTitle>Câmbio efetivo</CardTitle>
@@ -66,7 +75,7 @@ export default async function Configuracoes() {
             </div>
           ) : (
             <p className="text-muted-foreground">
-              Nenhuma operação de câmbio registrada ainda. O registro de trocas chega na fase 3.
+              Nenhuma troca registrada ainda. Registre em Câmbio.
             </p>
           )}
         </CardContent>
